@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Closet OS</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+</head>
+<body>
+<div class="app-shell">
+
+  <!-- top bar -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span class="logo">Closet OS</span>
+      <span class="tagline">Seattle · Minimalist · Old Wealth · NZ</span>
+    </div>
+    <div class="topbar-actions">
+      <div class="season-toggle">
+        <button class="season-btn active" data-season="all">All</button>
+        <button class="season-btn" data-season="summer">Summer</button>
+        <button class="season-btn" data-season="winter">Winter</button>
+      </div>
+      <button class="btn btn-primary" id="btn-add-item" style="display:flex;align-items:center;gap:6px;">
+        <i class="ti ti-plus"></i> Add Item
+      </button>
+    </div>
+  </header>
+
+  <div class="main">
+    <!-- sidebar navigation -->
+    <nav class="sidebar">
+      <div class="sidebar-nav" id="sidebar-nav">
+        <div class="nav-section-label">Views</div>
+        <button class="nav-item active" data-view="closet">
+          <span><i class="ti ti-hanger" style="margin-right:6px;"></i>Closet</span>
+        </button>
+        <button class="nav-item" data-view="gaps">
+          <span><i class="ti ti-list-check" style="margin-right:6px;"></i>Gaps &amp; Goals</span>
+        </button>
+        <button class="nav-item" data-view="suggestions">
+          <span><i class="ti ti-bulb" style="margin-right:6px;"></i>Suggestions</span>
+        </button>
+        <button class="nav-item" data-view="thrift">
+          <span><i class="ti ti-tag" style="margin-right:6px;"></i>Thrift List</span>
+        </button>
+
+        <div class="nav-section-label" style="margin-top:12px;">Categories</div>
+        <div id="category-nav"></div>
+      </div>
+    </nav>
+
+    <!-- main content -->
+    <main class="content">
+      <!-- stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Total pieces</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-replace" style="color:#9a2828">—</div><div class="stat-label">Need replacing</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-gaps" style="color:#7a4a08">—</div><div class="stat-label">Category gaps</div></div>
+        <div class="stat-card"><div class="stat-num" id="stat-rating" style="color:#2d5a1b">—</div><div class="stat-label">Avg style rating</div></div>
+      </div>
+
+      <!-- alert bar -->
+      <div class="alert-bar" id="alert-bar" style="display:none;">
+        <i class="ti ti-alert-triangle"></i>
+        <span id="alert-text"></span>
+      </div>
+
+      <!-- panels -->
+      <div id="view-closet"></div>
+      <div id="view-gaps" style="display:none;"></div>
+      <div id="view-suggestions" style="display:none;"></div>
+      <div id="view-thrift" style="display:none;"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ── Add / Edit Modal ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="item-modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">Add Item</h2>
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <i class="ti ti-x"></i>
+      </button>
+    </div>
+    <form id="item-form" autocomplete="off">
+      <input type="hidden" id="f-id" />
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label" for="f-name">Item Name *</label>
+          <input class="form-input" id="f-name" type="text" placeholder="e.g. Commission Short" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-brand">Brand</label>
+          <input class="form-input" id="f-brand" type="text" placeholder="e.g. Lululemon" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-category">Category *</label>
+          <select class="form-select" id="f-category" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-season">Season</label>
+          <select class="form-select" id="f-season">
+            <option value="both">Both</option>
+            <option value="summer">Summer</option>
+            <option value="winter">Winter</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-fit">Fit / Size</label>
+          <input class="form-input" id="f-fit" type="text" placeholder="e.g. M, 32×32" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-material">Material</label>
+          <input class="form-input" id="f-material" type="text" placeholder="e.g. Cotton" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <div class="color-row">
+            <input type="color" class="color-preview" id="f-color" value="#888888" title="Pick color" />
+            <input class="form-input" id="f-colorName" type="text" placeholder="Color name e.g. Olive" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-condition">Condition *</label>
+          <select class="form-select" id="f-condition" required>
+            <option value="good">Good</option>
+            <option value="new">New / Unworn</option>
+            <option value="worn">Worn / Issue</option>
+            <option value="replace">Needs Replacing</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="f-rating">Style Rating (1–10)</label>
+          <input class="form-input" id="f-rating" type="number" min="1" max="10" placeholder="7" />
+        </div>
+        <div class="form-group full">
+          <label class="form-label" for="f-notes">Notes</label>
+          <textarea class="form-textarea" id="f-notes" placeholder="Any fit issues, things to fix, reminders..."></textarea>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="modal-cancel">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="modal-submit">Save Item</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Delete Confirm ───────────────────────────────────────────────── -->
+<div class="confirm-overlay" id="confirm-overlay">
+  <div class="confirm-box">
+    <div class="confirm-title">Remove item?</div>
+    <div class="confirm-body" id="confirm-body">This will permanently delete the item from your wardrobe.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-secondary" id="confirm-cancel">Keep it</button>
+      <button class="btn btn-danger" id="confirm-delete">Remove</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toasts ───────────────────────────────────────────────────────── -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="/js/api.js"></script>
+<script src="/js/ui.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>

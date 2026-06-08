@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Closet OS</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css" />
+  <style>
+    :root {
+      --color-background-primary: #ffffff;
+      --color-background-secondary: #f5f4f1;
+      --color-background-tertiary: #eeede9;
+      --color-background-success: #eaf3de;
+      --color-background-warning: #faeeda;
+      --color-background-danger: #fcebeb;
+      --color-background-info: #e6f1fb;
+      --color-text-primary: #1a1a18;
+      --color-text-secondary: #5f5e5a;
+      --color-text-tertiary: #888780;
+      --color-text-success: #3b6d11;
+      --color-text-warning: #854f0b;
+      --color-text-danger: #a32d2d;
+      --color-text-info: #185fa5;
+      --color-border-tertiary: rgba(0,0,0,0.12);
+      --color-border-secondary: rgba(0,0,0,0.22);
+      --color-border-primary: rgba(0,0,0,0.32);
+      --border-radius-md: 8px;
+      --border-radius-lg: 12px;
+      --border-radius-xl: 16px;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-serif: Georgia, 'Times New Roman', serif;
+      --font-mono: 'Courier New', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --color-background-primary: #1e1e1c;
+        --color-background-secondary: #27271f;
+        --color-background-tertiary: #2e2e25;
+        --color-background-success: #17340a;
+        --color-background-warning: #412402;
+        --color-background-danger: #501313;
+        --color-background-info: #042c53;
+        --color-text-primary: #f0efe8;
+        --color-text-secondary: #b4b2a9;
+        --color-text-tertiary: #888780;
+        --color-text-success: #c0dd97;
+        --color-text-warning: #fac775;
+        --color-text-danger: #f7c1c1;
+        --color-text-info: #b5d4f4;
+        --color-border-tertiary: rgba(255,255,255,0.1);
+        --color-border-secondary: rgba(255,255,255,0.18);
+        --color-border-primary: rgba(255,255,255,0.28);
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-background-tertiary);
+      color: var(--color-text-primary);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .app { padding: 1.5rem 2rem; background: var(--color-background-primary); border-radius: var(--border-radius-xl); border: 0.5px solid var(--color-border-tertiary); }
+
+    .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; }
+    .brand { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-tertiary); font-weight: 500; }
+    .title { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+    .subtitle { font-size: 13px; color: var(--color-text-secondary); margin-top: 2px; }
+
+    .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--color-border-tertiary); overflow-x: auto; }
+    .tab { padding: 8px 14px; font-size: 13px; color: var(--color-text-secondary); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: all 0.15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; user-select: none; }
+    .tab.active { color: var(--color-text-primary); border-bottom-color: var(--color-text-primary); font-weight: 500; }
+    .tab:hover:not(.active) { color: var(--color-text-primary); }
+
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-text-tertiary); font-weight: 500; margin-bottom: 10px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-bottom: 1.5rem; }
+
+    .card { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
+    .card:hover { border-color: var(--color-border-secondary); }
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; gap: 8px; }
+    .item-name { font-size: 13px; font-weight: 500; color: var(--color-text-primary); line-height: 1.3; }
+    .item-brand { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+
+    .badge { font-size: 11px; padding: 2px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+    .badge-good { background: var(--color-background-success); color: var(--color-text-success); }
+    .badge-worn { background: var(--color-background-warning); color: var(--color-text-warning); }
+    .badge-replace { background: var(--color-background-danger); color: var(--color-text-danger); }
+    .badge-new { background: var(--color-background-info); color: var(--color-text-info); }
+
+    .item-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .color-dot { width: 10px; height: 10px; border-radius: 50%; border: 0.5px solid var(--color-border-secondary); flex-shrink: 0; }
+    .item-fit { font-size: 12px; color: var(--color-text-tertiary); }
+    .stars { font-size: 12px; color: var(--color-text-secondary); margin-top: 6px; }
+
+    .alert-bar { background: var(--color-background-warning); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); padding: 10px 14px; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--color-text-warning); }
+
+    .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 1.5rem; }
+    .stat { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; }
+    .stat-num { font-size: 22px; font-weight: 500; color: var(--color-text-primary); }
+    .stat-label { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+
+    .section-divider { display: flex; align-items: center; gap: 10px; margin: 1.25rem 0 0.75rem; }
+    .divider-line { flex: 1; height: 0.5px; background: var(--color-border-tertiary); }
+    .category-title { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.08em; white-space: nowrap; }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .season-toggle { display: flex; gap: 4px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 3px; border: 0.5px solid var(--color-border-tertiary); }
+    .season-btn { padding: 5px 14px; font-size: 12px; border-radius: 6px; cursor: pointer; color: var(--color-text-secondary); transition: all 0.15s; border: none; background: transparent; font-weight: 500; }
+    .season-btn.active { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary); }
+
+    .gap-indicator { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border: 0.5px dashed var(--color-border-secondary); border-radius: var(--border-radius-md); margin-bottom: 6px; font-size: 12px; color: var(--color-text-secondary); }
+    .gap-count { font-size: 12px; font-weight: 500; color: var(--color-text-secondary); }
+    .priority-badge { font-size: 11px; padding: 2px 7px; border-radius: 20px; }
+    .p-high { background: #fcebeb; color: #a32d2d; }
+    .p-med { background: #faeeda; color: #854f0b; }
+    .p-low { background: #eaf3de; color: #3b6d11; }
+
+    .suggestion-card { background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); border-radius: var(--border-radius-lg); padding: 12px 14px; margin-bottom: 8px; }
+    .suggestion-title { font-size: 13px; font-weight: 500; color: var(--color-text-primary); }
+    .suggestion-body { font-size: 13px; color: var(--color-text-secondary); margin-top: 6px; line-height: 1.6; }
+
+    .brand-pill { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 4px 10px; border-radius: 20px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); margin: 3px; cursor: pointer; transition: all 0.15s; background: none; }
+    .brand-pill:hover { border-color: var(--color-border-primary); color: var(--color-text-primary); }
+
+    .add-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 7px 14px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); color: var(--color-text-secondary); cursor: pointer; background: transparent; transition: all 0.15s; font-family: var(--font-sans); margin-top: 0.5rem; }
+    .add-btn:hover { background: var(--color-background-secondary); color: var(--color-text-primary); }
+
+    @media (max-width: 600px) {
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .app { padding: 1rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="app">
+
+    <div class="header">
+      <div>
+        <div class="brand">Closet OS · Seattle</div>
+        <div class="title">My Wardrobe</div>
+        <div class="subtitle">Minimalist · Old Wealth · Outdoor · NZ Inspired</div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="season-toggle">
+          <button class="season-btn active" onclick="setSeason(this, 'summer')">Summer</button>
+          <button class="season-btn" onclick="setSeason(this, 'winter')">Winter</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">42</div>
+        <div class="stat-label">Total pieces</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:#a32d2d">7</div>
+        <div class="stat-label">Need replacing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:#854f0b">6</div>
+        <div class="stat-label">Category gaps</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num" style="color:#3b6d11">8.1</div>
+        <div class="stat-label">Avg style rating</div>
+      </div>
+    </div>
+
+    <div class="alert-bar">
+      <i class="ti ti-alert-triangle" style="font-size:16px;"></i>
+      <span>3 items need immediate replacement · 4 items ill-fitting · Target: 4 per category</span>
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="showPanel('closet', this)"><i class="ti ti-hanger"></i> Closet</div>
+      <div class="tab" onclick="showPanel('gaps', this)"><i class="ti ti-list-check"></i> Gaps &amp; Goals</div>
+      <div class="tab" onclick="showPanel('suggestions', this)"><i class="ti ti-bulb"></i> Suggestions</div>
+      <div class="tab" onclick="showPanel('thrift', this)"><i class="ti ti-tag"></i> Thrift List</div>
+    </div>
+
+    <!-- CLOSET PANEL -->
+    <div id="panel-closet" class="panel active">
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Long pants</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">ABC Jogger</div><div class="item-brand">Lululemon</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#b0c4de;"></div><span class="item-fit">32×32 · Synthetic waterproof</span></div><div class="stars">★★★★★★<span style="opacity:.3">★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">6/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chino Pant</div><div class="item-brand">Vineyard Vines</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#d2b48c;"></div><span class="item-fit">32×32 · Breathable, tan</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chino Pant</div><div class="item-brand">Dockers</div></div><span class="badge badge-worn">Waist too big</span></div><div class="item-meta"><div class="color-dot" style="background:#556b2f;"></div><span class="item-fit">34×32 · Waterproof, green</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chino Pant</div><div class="item-brand">Dockers</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#8b4513;"></div><span class="item-fit">32×32 · Textured, brown</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Ripstop Pant</div><div class="item-brand">Vuori</div></div><span class="badge badge-new">Unworn</span></div><div class="item-meta"><div class="color-dot" style="background:#c0392b;"></div><span class="item-fit">32×32 · Textured, red</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Jeans</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Luxe Travel Slim</div><div class="item-brand">Banana Republic</div></div><span class="badge badge-worn">Zipper issue</span></div><div class="item-meta"><div class="color-dot" style="background:#6e8eba;"></div><span class="item-fit">32×30 · Faded blue</span></div><div class="stars">★★★★★<span style="opacity:.3">★★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">5/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Long sleeves</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Long Sleeve Tee</div><div class="item-brand">Unknown</div></div><span class="badge badge-worn">Stretched out</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">S · Cotton, black</span></div><div class="stars">★★★★★★<span style="opacity:.3">★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">6/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Graphic tees</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Graphic Tee</div><div class="item-brand">Hurley</div></div><span class="badge badge-worn">Stretched</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">M · Cotton · Muted graphic</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Graphic Tee</div><div class="item-brand">Heavenly</div></div><span class="badge badge-worn">Stretched</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">M · Cotton · Blue graphic</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Palm Graphic Tee</div><div class="item-brand">Unknown</div></div><span class="badge badge-worn">Too tight</span></div><div class="item-meta"><div class="color-dot" style="background:#8b6914;"></div><span class="item-fit">S · Synthetic, brown</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Surf Graphic Tee</div><div class="item-brand">Ptima</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#4a6fa5;"></div><span class="item-fit">M · Cotton/Poly, blue</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Pocket tees</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Pocket Tee</div><div class="item-brand">Backcountry</div></div><span class="badge badge-worn">Too tight</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">M · Synthetic · Green pocket</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Supima Pocket Tee</div><div class="item-brand">Tommy Bahama</div></div><span class="badge badge-worn">Too large</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">L · Cotton, white</span></div><div class="stars">★★★★★★★★★★ <span style="font-size:11px;color:var(--color-text-tertiary)">10/10</span></div></div>
+        <div class="card" style="border-color:#3b6d11;"><div class="card-top"><div><div class="item-name">Cooling Pocket Tee ⭐</div><div class="item-brand">Unknown (G Scissors?)</div></div><span class="badge badge-good">Best shirt</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Perfect fit · 100% Cotton</span></div><div class="stars">★★★★★★★★★★ <span style="font-size:11px;color:var(--color-text-tertiary)">10/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Athletic shorts (non-gym)</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Pace Breaker Short</div><div class="item-brand">Lululemon</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#b0c4de;"></div><span class="item-fit">M · Synthetic, light blue</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Pace Breaker Short</div><div class="item-brand">Lululemon</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#1a3a5c;"></div><span class="item-fit">M · Synthetic, dark blue</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Running shorts</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Run Short</div><div class="item-brand">Run X</div></div><span class="badge badge-worn">Worn but functional</span></div><div class="item-meta"><div class="color-dot" style="background:#556b2f;"></div><span class="item-fit">M · Synthetic · Zip pocket, green</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Run Short</div><div class="item-brand">Run X</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#c8c8c8;"></div><span class="item-fit">M · Synthetic · Zip pocket, grey</span></div><div class="stars">★★★★★★★★★<span style="opacity:.3">★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">9/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Chino shorts</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card" style="border-color:#854f0b;"><div class="card-top"><div><div class="item-name">Commission Short</div><div class="item-brand">Lululemon</div></div><span class="badge badge-worn">Replace soon</span></div><div class="item-meta"><div class="color-dot" style="background:#8b6914;"></div><span class="item-fit">32W · Waterproof, sweat-proof, brown</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chino Short</div><div class="item-brand">Hurley</div></div><span class="badge badge-replace">Replace now</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chino Short</div><div class="item-brand">Tommy Hilfiger</div></div><span class="badge badge-worn">Replace soon</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Layering</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Chambray Shirt</div><div class="item-brand">Unknown</div></div><span class="badge badge-worn">Fit off, wrong buttons</span></div><div class="item-meta"><div class="color-dot" style="background:#b0c4de;"></div><span class="item-fit">Light blue</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Plaid Button-Up</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#6a0dad;"></div><span class="item-fit">Purple/white/red plaid</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Quarter-Zip</div><div class="item-brand">Nike</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#888;"></div><span class="item-fit">Grey · Thin</span></div><div class="stars">★★★★★<span style="opacity:.3">★★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">5/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Textured Quarter-Zip</div><div class="item-brand">Nike</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black · Thicker</span></div><div class="stars">★★★★★★★<span style="opacity:.3">★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">7/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Jackets</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Duke Hoodie</div><div class="item-brand">Duke</div></div><span class="badge badge-good">Good</span></div><div class="stars">★★★★★★<span style="opacity:.3">★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">6/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Duke Sweater</div><div class="item-brand">Duke</div></div><span class="badge badge-good">Good</span></div><div class="stars">★★★★★★★★★★ <span style="font-size:11px;color:var(--color-text-tertiary)">10/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Rain Jacket</div><div class="item-brand">Banana Republic</div></div><span class="badge badge-worn">Low rating</span></div><div class="item-meta"><div class="color-dot" style="background:#4a6fa5;"></div><span class="item-fit">Blue</span></div><div class="stars">★★★★<span style="opacity:.3">★★★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">4/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Cargo Jacket</div><div class="item-brand">Lululemon</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black · Snap buttons</span></div><div class="stars">★★★★★★★★★★ <span style="font-size:11px;color:var(--color-text-tertiary)">10/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Waterproof Rain Jacket</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#888;"></div><span class="item-fit">Grey</span></div><div class="stars">★★★★★<span style="opacity:.3">★★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">5/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Anti Series Jacket</div><div class="item-brand">Ripcurl</div></div><span class="badge badge-worn">Not fully waterproof</span></div><div class="item-meta"><div class="color-dot" style="background:#b0c4de;"></div><span class="item-fit">Blue/light blue</span></div><div class="stars">★★★★★<span style="opacity:.3">★★★★★</span> <span style="font-size:11px;color:var(--color-text-tertiary)">5/10</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Hats</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Visor</div><div class="item-brand">UCLA</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Velvet Cap</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#1a3a5c;"></div><span class="item-fit">Blue velvet</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Beanie</div><div class="item-brand">Carhartt</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#8b6914;"></div><span class="item-fit">Brown</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Beanie</div><div class="item-brand">Duke Engineering</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White/blue</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Formal / polo shirts</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Long Sleeve Polo</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#556b2f;"></div><span class="item-fit">Green</span></div><div class="stars">★★★★★★★★★★ <span style="font-size:11px;color:var(--color-text-tertiary)">10/10</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Tailored Dress Shirt</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White, tailored</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Weave Collar Sweater</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Quarter-Zip Sweater</div><div class="item-brand">Spyder</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White/black</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Shoes</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Runners</div><div class="item-brand">Nike</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Low Top Slider</div><div class="item-brand">Sperry</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#f0ede0;border-color:#aaa;"></div><span class="item-fit">White</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Chukka Boots</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#8b6914;"></div><span class="item-fit">Brown</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">PF Flyers</div><div class="item-brand">PF Flyers</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Trail Runners</div><div class="item-brand">Unknown</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#556b2f;"></div><span class="item-fit">Green</span></div></div>
+      </div>
+
+      <div class="section-divider"><div class="divider-line"></div><div class="category-title">Swimwear</div><div class="divider-line"></div></div>
+      <div class="grid">
+        <div class="card"><div class="card-top"><div><div class="item-name">Board Short</div><div class="item-brand">Vuori</div></div><span class="badge badge-good">Good</span></div><div class="item-meta"><div class="color-dot" style="background:#4a6fa5;"></div><span class="item-fit">Blue/white</span></div></div>
+        <div class="card"><div class="card-top"><div><div class="item-name">Board Short</div><div class="item-brand">Hurley</div></div><span class="badge badge-worn">Fix drawstrings</span></div><div class="item-meta"><div class="color-dot" style="background:#222;"></div><span class="item-fit">Black</span></div></div>
+      </div>
+
+    </div>
+
+    <!-- GAPS PANEL -->
+    <div id="panel-gaps" class="panel">
+      <div class="section-label" style="margin-bottom:12px;">Target: 4 items per category · Red = urgent</div>
+      <div class="gap-indicator"><span>Short-sleeve polos</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">0 / 4</span><span class="badge priority-badge p-high">None owned</span></div></div>
+      <div class="gap-indicator"><span>Jeans</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">1 / 4</span><span class="badge priority-badge p-high">Need 3 more</span></div></div>
+      <div class="gap-indicator"><span>Long-sleeve shirts</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">1 / 4</span><span class="badge priority-badge p-high">Need 3 more</span></div></div>
+      <div class="gap-indicator"><span>Chino shorts</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">3 / 4</span><span class="badge priority-badge p-high">2 to replace</span></div></div>
+      <div class="gap-indicator"><span>Solid / textured tees</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">0 / 4</span><span class="badge priority-badge p-med">Noted as needed</span></div></div>
+      <div class="gap-indicator"><span>Pocket tees</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">3 / 4</span><span class="badge priority-badge p-med">Need 1 more</span></div></div>
+      <div class="gap-indicator"><span>Athletic shorts</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">2 / 4</span><span class="badge priority-badge p-med">Need 2 more</span></div></div>
+      <div class="gap-indicator"><span>Sunglasses</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">0 / 1</span><span class="badge priority-badge p-high">None logged</span></div></div>
+      <div class="gap-indicator"><span>Fragrance</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">0 / 1</span><span class="badge priority-badge p-med">Sandalwood/cypress</span></div></div>
+      <div class="gap-indicator"><span>Graphic tees</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">4 / 4</span><span class="badge priority-badge p-med">2 stretched</span></div></div>
+      <div class="gap-indicator"><span>Jackets</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">6 owned</span><span class="badge priority-badge p-low">Over target</span></div></div>
+      <div class="gap-indicator"><span>Hats</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">4 / 4</span><span class="badge priority-badge p-low">Complete</span></div></div>
+      <div class="gap-indicator"><span>Shoes</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">5 owned</span><span class="badge priority-badge p-low">Good variety</span></div></div>
+      <div class="gap-indicator"><span>Jewelry</span><div style="display:flex;align-items:center;gap:8px;"><span class="gap-count">–</span><span class="badge priority-badge p-low">Not specified</span></div></div>
+    </div>
+
+    <!-- SUGGESTIONS PANEL -->
+    <div id="panel-suggestions" class="panel">
+      <div class="suggestion-card"><div class="suggestion-title">🔁 Replace the Lulu brown chino short first</div><div class="suggestion-body">Your best short (waterproof, sweat-proof) is beat up. Search Lululemon for the Commission Short 7" in tan or olive — same properties. Consider buying two to future-proof.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">👖 Upgrade your denim game (1 → 4 pairs)</div><div class="suggestion-body">You only have one pair of jeans with a zipper issue. For your NZ/old wealth aesthetic, look for slim-straight fits in dark indigo and mid-wash. Rodd & Gunn makes excellent NZ-inspired denim. Also try APC or Corridor for quality thrift-able jeans.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">👕 Find your best pocket tee twin</div><div class="suggestion-body">Your black Amazon pocket tee (possibly G Scissors) rated 10/10 — search Amazon for "cooling pocket tee 100% cotton" to identify and buy 3–4 more. This is your anchor piece.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🎽 Short-sleeve textured polos (0 owned) — biggest gap</div><div class="suggestion-body">Rodd & Gunn make exactly what you described — 2-button placket, relaxed collar, textured fabric. Their Sports Fit Polo is ideal for your aesthetic. Look for olive, navy, and stone colorways.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🪡 Chambray shirt fix</div><div class="suggestion-body">Look for a Japanese selvedge chambray or a Rodd & Gunn linen-blend with horn or corozo (wood-like) buttons. Aim for a slightly oversized relaxed fit for layering over tees. Dark chambray is more versatile than light for PNW weather.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🧥 Replace the Banana Republic rain jacket (4/10)</div><div class="suggestion-body">For Seattle rain + your outdoor/VC aesthetic: look at Arc'teryx Veilance (luxury), Helly Hansen (functional), or Rodd & Gunn's Queenstown jacket. Target a technical shell in olive, navy, or stone — not black, which is covered by the Lulu cargo.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🕶 Sunglasses</div><div class="suggestion-body">For your aesthetic: Moscot, Oliver Peoples, or Maui Jim (outdoor/NZ). Stick to tortoiseshell, olive, or matte black frames. Polarized essential for Pacific Northwest glare on water.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🌿 Fragrance — sandalwood + cypress</div><div class="suggestion-body">Tom Ford Oud Wood, Comme des Garçons Wonderwood, or Aesop Hwyl. For NZ/outdoor feel: Margiela Replica "Sailing Day" or Paco Rabanne Pure XS Forest. Try decants before committing to a full bottle.</div></div>
+      <div class="suggestion-card"><div class="suggestion-title">🎨 Palette note — the red Vuori pants</div><div class="suggestion-body">Red doesn't slot naturally into your minimalist/old wealth palette and you've never worn them. Consider donating and freeing that slot for a navy or olive pair instead.</div></div>
+    </div>
+
+    <!-- THRIFT PANEL -->
+    <div id="panel-thrift" class="panel">
+      <div class="section-label" style="margin-bottom:12px;">Thrift shop hunting list — sorted by priority</div>
+      <div class="suggestion-card">
+        <div class="suggestion-title" style="color:#a32d2d;">🔴 High priority</div>
+        <div class="suggestion-body">
+          <strong>Slim-straight dark indigo jeans, 32×30/31</strong> — Brands: APC, Nudie, Patagonia, Levi's 511. Pass if faded, worn knees, or wide leg.<br><br>
+          <strong>Short-sleeve polo, textured fabric, M</strong> — 2-button placket, no logos, pique or ottoman texture. Colors: olive, navy, stone, slate. Pass if synthetic blend or baggy fit.<br><br>
+          <strong>Lululemon Commission or ABC Short, brown/tan, 32W</strong> — Must be waterproof/technical fabric. Check gusset and zipper integrity.
+        </div>
+      </div>
+      <div class="suggestion-card">
+        <div class="suggestion-title" style="color:#854f0b;">🟡 Medium priority</div>
+        <div class="suggestion-body">
+          <strong>Dark chambray or denim shirt, S/M</strong> — Look for horn or wood-look buttons (not plastic). Rodd & Gunn, Faherty, or any Japanese selvedge maker. Pass if plastic buttons or boxy fit.<br><br>
+          <strong>Solid cotton tees, M, heavier-weight (180gsm+)</strong> — Slight wash/worn look. Colors: off-white, slate, olive, stone. Brands: Sunspel, vintage Hanes, or any quality thrift find.<br><br>
+          <strong>Merino quarter-zip or mid-layer, S/M</strong> — Brands: Icebreaker, Smartwool, Rodd & Gunn. Colors: charcoal, navy, olive. Pass if pilled or synthetic.
+        </div>
+      </div>
+      <div class="suggestion-card">
+        <div class="suggestion-title" style="color:#3b6d11;">🟢 Opportunistic</div>
+        <div class="suggestion-body">
+          <strong>Technical rain shell, M, fully waterproof</strong> — Check for taped seams. Colors: olive, navy, stone. Brands: Arc'teryx, Marmot, Patagonia, Helly Hansen. Pass on Banana Republic or anything without taped seams.<br><br>
+          <strong>Brown leather chukkas</strong> — Clarks Desert Boot or similar. Check sole wear and leather condition. Only buy if stitching is intact.<br><br>
+          <strong>Canvas or twill athletic shorts, M 32</strong> — Lululemon or Vuori preferred. Check inner liner for sweat-proof fabric.
+        </div>
+      </div>
+      <div style="margin-top:1.25rem;">
+        <div class="section-label" style="margin-bottom:8px;">Brands to watch for</div>
+        <div>
+          <span class="brand-pill"><i class="ti ti-circle-check" style="font-size:13px;color:#3b6d11;"></i> Lululemon</span>
+          <span class="brand-pill"><i class="ti ti-circle-check" style="font-size:13px;color:#3b6d11;"></i> Rodd &amp; Gunn</span>
+          <span class="brand-pill"><i class="ti ti-circle-check" style="font-size:13px;color:#3b6d11;"></i> Hurley</span>
+          <span class="brand-pill"><i class="ti ti-circle-check" style="font-size:13px;color:#3b6d11;"></i> Mountain Force</span>
+          <span class="brand-pill">Vuori</span>
+          <span class="brand-pill">Patagonia</span>
+          <span class="brand-pill">Arc'teryx</span>
+          <span class="brand-pill">Icebreaker</span>
+          <span class="brand-pill">APC</span>
+          <span class="brand-pill">Faherty</span>
+          <span class="brand-pill">Sunspel</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function showPanel(name, tabEl) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    tabEl.classList.add('active');
+  }
+
+  function setSeason(el, season) {
+    document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+  }
+</script>
+</body>
+</html>
